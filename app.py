@@ -12,9 +12,9 @@ def send_message(chat_id, text, buttons=None):
     data = {
         "chat_id": chat_id,
         "text": text,
-        "reply_markup": {
+        "reply_markup": json.dumps({
             "inline_keyboard": buttons if buttons else []
-        }
+        })
     }
     requests.post(url, json=data)
 
@@ -46,6 +46,25 @@ def webhook():
 @app.route("/", methods=["GET"])
 def home():
     return "Rubika Bot is running!"
+
+@app.route("/callback", methods=["POST"])
+def callback():
+    data = request.json
+    if "callback_query" in data:
+        callback_query_id = data["callback_query"]["id"]
+        chat_id = data["callback_query"]["message"]["chat"]["id"]
+        callback_data = data["callback_query"]["data"]
+
+        # بررسی مقدار callback_data و ارسال پیام مرتبط
+        if callback_data == "shop":
+            send_message(chat_id, "شما به فروشگاه اکانت وارد شدید!")
+        elif callback_data == "helpers":
+            send_message(chat_id, "دستیاران ربات.")
+        elif callback_data == "info":
+            send_message(chat_id, "اطلاعات شما به روزرسانی شد.")
+        elif callback_data == "group":
+            send_message(chat_id, "گروه ما.")
+    return "OK"
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
