@@ -24,8 +24,6 @@ def webhook():
         
         # اضافه کردن دستورات جدید
         if text == "/start":
-    elif text == "/مجموعه خبری ما":
-    send_message(کلیک کن, "@MaJMoeH_PERSiAN") 
             send_message(chat_id, "ربیکا هستم! برای کمک، دستور /help رو بزن!")
         elif text == "/help":
             send_message(chat_id, "این ربات از دستورات زیر پشتیبانی می‌کنه:\n/start: شروع کار\n/help: برای راهنمایی")
