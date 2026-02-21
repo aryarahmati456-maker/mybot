@@ -4,14 +4,17 @@ import json
 
 app = Flask(__name__)
 
-TOKEN = "HFGBIOFGIVHWMFWHIRXRVRNKCRRUWNKERZBIS"
+TOKEN = "HFGBIOFGIVHWMFWHIRXVRNKCRRUWNERZBIS"
 API_URL = f"https://botapi.rubika.ir/v3/{TOKEN}"
 
-def send_message(chat_id, text):
+def send_message(chat_id, text, buttons=None):
     url = API_URL + "/sendMessage"
     data = {
         "chat_id": chat_id,
-        "text": text
+        "text": text,
+        "reply_markup": {
+            "inline_keyboard": buttons if buttons else []
+        }
     }
     requests.post(url, json=data)
 
@@ -22,14 +25,22 @@ def webhook():
         chat_id = data["message"]["chat_id"]
         text = data["message"].get("text", "")
         
-        # اضافه کردن دستورات جدید
         if text == "/start":
-            send_message(chat_id, "ربیکا هستم! برای کمک، دستور /help رو بزن!")
+            buttons = [
+                [
+                    {"text": "فروشگاه اکانت", "callback_data": "shop"},
+                    {"text": "آیدی دستیاران", "callback_data": "helpers"}
+                ],
+                [
+                    {"text": "اطلاعات بنده", "callback_data": "info"},
+                    {"text": "مجموعه ما", "callback_data": "group"}
+                ]
+            ]
+            send_message(chat_id, "سلام! انتخاب کنید:", buttons)
         elif text == "/help":
-            send_message(chat_id, "این ربات از دستورات زیر پشتیبانی می‌کنه:\n/start: شروع کار\n/help: برای راهنمایی")
+            send_message(chat_id, "برای دریافت راهنمایی، دستور /start رو وارد کنید.")
         else:
-            send_message(chat_id, "دستور شناخته شده‌ای ارسال نکردی. برای کمک، /help رو بزن!")
-
+            send_message(chat_id, "دستور شناخته نشده است.")
     return "OK"
 
 @app.route("/", methods=["GET"])
