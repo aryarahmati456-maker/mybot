@@ -2,7 +2,7 @@ from flask import Flask, request
 import requests
 import json
 
-app = Flask(name)
+app = Flask(__name__)
 
 TOKEN = "HFGBI0FGIVHWMFWHIRXRVRNKCRRUWNKERZBBISKGCQJJIRRNBVCLNHRQFOOHFPUX"
 API_URL = f"https://botapi.rubika.ir/v3/{TOKEN}/"
