@@ -4,11 +4,11 @@ import json
 
 app = Flask(__name__)
 
-TOKEN = "HFGBI0FGIVHWMFWHIRXRVRNKCRRUWNKERZBBISKGCQJJIRRNBVCLNHRQFOOHFPUX"
-API_URL = f"https://botapi.rubika.ir/v3/{TOKEN}/"
+TOKEN = "HFGBIOFGIVHWMFWHIRXRVRNKCRRUWNKERZBIS"
+API_URL = f"https://botapi.rubika.ir/v3/{TOKEN}"
 
 def send_message(chat_id, text):
-    url = API_URL + "sendMessage"
+    url = API_URL + "/sendMessage"
     data = {
         "chat_id": chat_id,
         "text": text
@@ -21,11 +21,14 @@ def webhook():
     if "message" in data:
         chat_id = data["message"]["chat_id"]
         text = data["message"].get("text", "")
-
+        
+        # اضافه کردن دستورات جدید
         if text == "/start":
-            send_message(chat_id, "سلام 👋 من ربات روبیکا هستم!")
+            send_message(chat_id, "ربیکا هستم! برای کمک، دستور /help رو بزن!")
+        elif text == "/help":
+            send_message(chat_id, "این ربات از دستورات زیر پشتیبانی می‌کنه:\n/start: شروع کار\n/help: برای راهنمایی")
         else:
-            send_message(chat_id, "پیامت رسید 😊")
+            send_message(chat_id, "دستور شناخته شده‌ای ارسال نکردی. برای کمک، /help رو بزن!")
 
     return "OK"
 
