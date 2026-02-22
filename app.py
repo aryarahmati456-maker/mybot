@@ -20,15 +20,18 @@ def send_message(chat_id, text, buttons=None):
     }
     requests.post(url, json=data)
 
-# تنظیم Webhook برای دریافت پیام‌ها
-@app.route("/", methods=["POST"])
+# Webhook اصلی
+@app.route("/", methods=["GET", "POST"])
 def webhook():
+    # وقتی مرورگر باز می‌کند (برای تست سرور)
+    if request.method == "GET":
+        return "Bot is running"
+
     data = request.json
     if "message" in data:
         chat_id = data["message"]["chat_id"]
         text = data["message"].get("text", "")
         
-        # دستور /start
         if text == "/start":
             buttons = [
                 [
@@ -41,31 +44,29 @@ def webhook():
                 ]
             ]
             send_message(chat_id, "سلام! انتخاب کنید:", buttons)
-        
-        # دستور /help
+
         elif text == "/help":
-            send_message(chat_id, "این ربات از دستورات زیر پشتیبانی می‌کند:\n/start: شروع\n/help: راهنمایی\n/command1: توضیح دستور 1\n/command2: توضیح دستور 2")
-        
-        # دستورات سفارشی شما
+            send_message(chat_id, "این ربات از دستورات زیر پشتیبانی می‌کند:\n/start\n/help\n/command1\n/command2")
+
         elif text == "/command1":
             send_message(chat_id, "این دستور شماره 1 است.")
+
         elif text == "/command2":
             send_message(chat_id, "این دستور شماره 2 است.")
+
         else:
             send_message(chat_id, "دستور شناخته نشده است.")
-    
+
     return "OK"
 
-# پاسخ به کلیک دکمه‌ها (callback_query)
+# پاسخ به کلیک دکمه‌ها
 @app.route("/callback", methods=["POST"])
 def callback():
     data = request.json
     if "callback_query" in data:
-        callback_query_id = data["callback_query"]["id"]
         chat_id = data["callback_query"]["message"]["chat"]["id"]
         callback_data = data["callback_query"]["data"]
 
-        # عمل بر اساس داده دکمه‌ها
         if callback_data == "shop":
             send_message(chat_id, "شما به فروشگاه اکانت وارد شدید!")
         elif callback_data == "helpers":
@@ -74,9 +75,8 @@ def callback():
             send_message(chat_id, "اطلاعات شما به روزرسانی شد.")
         elif callback_data == "group":
             send_message(chat_id, "گروه ما.")
-    
+
     return "OK"
 
-# راه‌اندازی سرور
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
