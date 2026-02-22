@@ -2,7 +2,7 @@ from flask import Flask, request
 import requests
 import json
 
-app = Flask(name)
+app = Flask(__name__)
 
 # توکن ربات خود را اینجا وارد کنید
 TOKEN = "HFGBI0FGIVHWMFWHIRXRVRNKCRRUWNKERZBBISKGCQJJIRRNBVCLNHRQFOOHFPUX"
